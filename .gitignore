@@ -1,0 +1,7 @@
+.idea/*
+.vs/*
+packages/*
+NeoFlux/services-tests-*
+NeoFlux/bin/*
+NeoFlux/obj/*
+NeoFlux/run_server.sh
