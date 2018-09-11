@@ -21,7 +21,7 @@ namespace NeoFlux.Controllers
             var toAddress = jsonData.GetValue("recipientAddress").Value<string>();
             
             /** Get the type of currency */
-            var amount = jsonData.GetValue("amount").Value<int>();
+            var amount = jsonData.GetValue("amount").Value<decimal>();
             var asset = jsonData.GetValue("asset").Value<string>();
             
             /* Get owner data from private key */

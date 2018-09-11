@@ -84,7 +84,7 @@ namespace NeoFlux.Controllers
             var contractScripHash = jsonData.GetValue("contractScriptHash").Value<string>();            
             var targetAddress = jsonData.GetValue("targetAddress").Value<string>();                              
             var token = new NeoFluxNEP5(LuxApiFactory.GetLuxApi(), contractScripHash, null, GetDecimalsValueFromJson(jsonData));
-            return JsonResultObject(token.BalanceOf(targetAddress));                             
+            return JsonResultObject(token.BalanceForAddress(targetAddress));                             
         }     
 
         [HttpPost]
@@ -95,7 +95,7 @@ namespace NeoFlux.Controllers
             /** Get transfer data */
             var contractScripHash = jsonData.GetValue("contractScriptHash").Value<string>();            
             var toAddress = jsonData.GetValue("recipientAddress").Value<string>();
-            var amount = jsonData.GetValue("amount").Value<int>();            
+            var amount = jsonData.GetValue("amount").Value<decimal>();            
             
             /* Get owner data from private key */
             var fromPrivateKey = jsonData.GetValue("ownerPrivateKeyHash").Value<string>();            

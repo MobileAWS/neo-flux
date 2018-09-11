@@ -33,12 +33,30 @@ namespace NeoFlux.NeoLux.Core
             return response;
         }
 
-        public Transaction SimpleTransfer(KeyPair from_key, string to_address, BigInteger amount)
+        public decimal BalanceForAddress(string address)
         {
-            var sender_address_hash = from_key.address.GetScriptHashFromAddress();
-            var response = api.CallContract(from_key, ScriptHash, "transfer", new object[] { sender_address_hash, to_address.GetScriptHashFromAddress(), amount });
-            return response;
+            return BalanceForAddress(address.GetScriptHashFromAddress());
         }
 
+        private decimal BalanceForAddress(byte[] addressHash)
+        {
+            var response = new InvokeResult();
+            try
+            {
+                response = api.InvokeScript(ScriptHash, "balanceOf", new object[] { addressHash });
+                var bytes = (byte[])response.stack[0];
+                var balance = new BigInteger(bytes);
+                return BigIntegerToDecimal(balance, this.Decimals);
+            }
+            catch
+            {
+                throw new NeoException("Api did not return a value." + response);
+            }
+        }
+
+        private static decimal BigIntegerToDecimal(BigInteger value, BigInteger decimals)
+        {
+            return value == 0 ? 0 : value.ToDecimal((int)decimals);
+        }
     }
 }
