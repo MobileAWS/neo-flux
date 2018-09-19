@@ -44,8 +44,7 @@ namespace NeoFlux.NeoLux.Core
             try
             {
                 response = api.InvokeScript(ScriptHash, "balanceOf", new object[] { addressHash });
-                var bytes = (byte[])response.stack[0];
-                var balance = new BigInteger(bytes);
+                var balance = response.result.GetBigInteger();
                 return BigIntegerToDecimal(balance, this.Decimals);
             }
             catch
