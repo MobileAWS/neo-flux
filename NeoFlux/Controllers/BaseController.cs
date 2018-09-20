@@ -28,7 +28,7 @@ namespace NeoFlux.Controllers
             {
                 return RETRY_LIMIT;
             }
-            return disableRetry.Value<bool>() ? 0 : RETRY_LIMIT;           
+            return disableRetry.Value<bool>() ? 1 : RETRY_LIMIT;           
         }
         
         public string GetTransactionResult(Transaction tx)
@@ -71,7 +71,7 @@ namespace NeoFlux.Controllers
                 }                                
                 count++;
             }
-            return JsonError($"Unable to make transaction,  retried {limit} times and all failed");
+            return JsonError($"Unable to make transaction,  executed {limit} times and all failed");
         }
     }
 }
