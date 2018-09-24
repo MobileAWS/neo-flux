@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Neo.Lux.Core;
+using NeoFlux.NeoLux.Core;
 
 namespace NeoFlux.Support
 {
@@ -51,6 +52,11 @@ namespace NeoFlux.Support
             if (Configuration["Neo:Network"] == "Test")
             {
                 return NeoRPC.ForTestNet();
+            }
+
+            if (Configuration["Neo:Network"] == "AllCode")
+            {
+                return new NeoFluxNeoRPC("http://ec2-54-89-131-225.compute-1.amazonaws.com");
             }
 
             return null;
