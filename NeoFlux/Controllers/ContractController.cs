@@ -61,7 +61,7 @@ namespace NeoFlux.Controllers
                 /** Get transfer data */
                 var contractScripHash = jsonData.GetValue("contractScriptHash").Value<string>();
                 var toAddress = jsonData.GetValue("recipientAddress").Value<string>();
-                var amount = jsonData.GetValue("amount").Value<int>();
+                var amount = jsonData.GetValue("amount").Value<double>();
 
                 /* Get owner data from private key */
                 var fromPrivateKey = jsonData.GetValue("ownerPrivateKeyHash").Value<string>();
