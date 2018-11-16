@@ -10,6 +10,7 @@ using Neo.SmartContract.Framework;
 using NeoFlux.NeoLux.Core;
 using NeoFlux.Support;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace NeoFlux.Controllers
 {
@@ -35,7 +36,7 @@ namespace NeoFlux.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e.Message + "\n" + e.StackTrace);
                 return JsonError($"Unable to make transaction, {e.Message}");
             }
         }
@@ -62,7 +63,7 @@ namespace NeoFlux.Controllers
                 var contractScripHash = jsonData.GetValue("contractScriptHash").Value<string>();
                 var toAddress = jsonData.GetValue("recipientAddress").Value<string>();
                 var amount = jsonData.GetValue("amount").Value<double>();
-
+                Log.Debug($"GenerateTo called with recipient {toAddress} and value {amount}");                
                 /* Get owner data from private key */
                 var fromPrivateKey = jsonData.GetValue("ownerPrivateKeyHash").Value<string>();
                 var fromKeyPair = new KeyPair(LuxUtils.HexToBytes(fromPrivateKey));
@@ -71,18 +72,20 @@ namespace NeoFlux.Controllers
                     GetDecimalsValueFromJson(jsonData));
                 try
                 {
+                    Log.Debug($"Running transaction for recipient {toAddress}");
                     var transactionResult = token.GenerateTo(fromKeyPair, toAddress, new BigInteger(amount));
                     if (transactionResult != null)
                     {
                         dynamic result = new JObject();
                         result.result = transactionResult.ToString();
                         result.retries = retryCount;
+                        Log.Debug($"Sent {amount} to {toAddress}");
                         return Json(result);                        
                     }                    
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);                    
+                    Log.Error(e.Message + "\n" + e.StackTrace);                       
                 }
                 return null;
             });
@@ -105,7 +108,7 @@ namespace NeoFlux.Controllers
         [Authorize]
         public JsonResult Transfer([FromBody] JObject jsonData)
         {
-            return DoWithRetry(GetRetryValueFromJson(jsonData), retryCount =>
+            return DoWithRetry(GetRetryValueFromJson(jsonData), (retryCount) =>
             {
                 /** Get transfer data */
                 var contractScripHash = jsonData.GetValue("contractScriptHash").Value<string>();
@@ -130,7 +133,7 @@ namespace NeoFlux.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);                    
+                    Log.Error(e.Message + "\n" + e.StackTrace);                    
                 }
                 return null;
             });

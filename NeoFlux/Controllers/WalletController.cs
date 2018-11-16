@@ -5,6 +5,7 @@ using Neo.Lux.Cryptography;
 using Neo.Lux.Utils;
 using NeoFlux.Support;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace NeoFlux.Controllers
 {
@@ -31,7 +32,7 @@ namespace NeoFlux.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e.Message + "\n" + e.StackTrace);   
                 return JsonError($"Unable to create wallet, {e.Message}");
             }            
         }
@@ -55,7 +56,7 @@ namespace NeoFlux.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e.Message + "\n" + e.StackTrace);   
                 return JsonError($"Unable to get wallet information, {e.Message}");
             }            
         }     
@@ -78,7 +79,7 @@ namespace NeoFlux.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e.Message + "\n" + e.StackTrace);   
                 return JsonError($"Unable to get wallet state information, {e.Message}");
             }            
         }  

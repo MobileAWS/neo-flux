@@ -6,6 +6,7 @@ using Neo.Lux.Utils;
 using NeoFlux.NeoLux.Core;
 using NeoFlux.Support;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace NeoFlux.Controllers
 {
@@ -17,7 +18,7 @@ namespace NeoFlux.Controllers
         [Authorize]
         public JsonResult Transfer([FromBody] JObject jsonData)
         {
-            return DoWithRetry(GetRetryValueFromJson(jsonData), retryCount =>
+            return DoWithRetry(GetRetryValueFromJson(jsonData), (retryCount) =>
             {
                 /** Get transfer data */
                 var toAddress = jsonData.GetValue("recipientAddress").Value<string>();
@@ -43,7 +44,7 @@ namespace NeoFlux.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Log.Error(e.Message + "\n" + e.StackTrace);   
                 }
 
                 return null;
