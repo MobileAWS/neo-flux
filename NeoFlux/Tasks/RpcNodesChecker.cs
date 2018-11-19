@@ -27,6 +27,11 @@ namespace NeoFlux.Tasks
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {            
             LuxApiFactory.UpdateNodes(baseNodes, new NeoNode[0]);
+            if (_config["CheckServersAvailability"].Equals("false"))
+            {
+                return;
+            }
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 CheckNodes();
@@ -51,14 +56,14 @@ namespace NeoFlux.Tasks
                         {
                             Log.Debug($"Checking availability for {node.URL}");
                             var request = (HttpWebRequest) WebRequest.Create(node.URL);
-                            request.Timeout = 10000;
+                            request.Timeout = 30000;
                             var timer = new Stopwatch();
                             timer.Start();
                             var response = (HttpWebResponse) request.GetResponse();
                             response.Close();
                             timer.Stop();
                             node.Latency = timer.Elapsed.TotalMilliseconds;
-                            if (timer.Elapsed.TotalMilliseconds <= 700)
+                            if (timer.Elapsed.TotalMilliseconds <= 1000)
                             {
                                 enabledNodes.Add(node);
                             }
