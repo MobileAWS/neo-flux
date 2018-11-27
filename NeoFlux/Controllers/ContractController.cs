@@ -96,11 +96,22 @@ namespace NeoFlux.Controllers
         [Authorize]
         public JsonResult BalanceOf([FromBody] JObject jsonData)
         {
-            var contractScripHash = jsonData.GetValue("contractScriptHash").Value<string>();
-            var targetAddress = jsonData.GetValue("targetAddress").Value<string>();
-            var token = new NeoFluxNEP5(LuxApiFactory.GetLuxApi(), contractScripHash, null,
-                GetDecimalsValueFromJson(jsonData));
-            return JsonResultObject(token.BalanceForAddress(targetAddress));
+            return DoWithRetry(GetRetryValueFromJson(jsonData), retryCount =>
+            {
+                try
+                {
+                    var contractScripHash = jsonData.GetValue("contractScriptHash").Value<string>();
+                    var targetAddress = jsonData.GetValue("targetAddress").Value<string>();
+                    var token = new NeoFluxNEP5(LuxApiFactory.GetLuxApi(), contractScripHash, null,
+                        GetDecimalsValueFromJson(jsonData));
+                    return JsonResultObject(token.BalanceForAddress(targetAddress));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);                    
+                }
+                return null;
+            });
         }
 
         [HttpPost]
