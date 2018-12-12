@@ -83,5 +83,23 @@ namespace NeoFlux.Controllers
                 return JsonError($"Unable to get wallet state information, {e.Message}");
             }            
         }  
+        
+        [HttpPost]
+        [Route("validate_address")]
+        [Authorize]
+        public JsonResult ValidateAddress([FromBody]JObject jsonData)
+        {
+            try
+            {                
+                var address = jsonData.GetValue("walletAddress").Value<string>();
+                var isAddress = address.IsValidAddress();              
+                return JsonResultObject(isAddress);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message + "\n" + e.StackTrace);   
+                return JsonError($"Unable to get wallet information, {e.Message}");
+            }            
+        } 
     }
 }

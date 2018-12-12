@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using LunarLabs.Parser;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Neo.Lux.Core;
+using Neo.Lux.Utils;
 using NeoFlux.Model;
 using NeoFlux.NeoLux.Core;
 using Serilog;
@@ -73,6 +75,18 @@ namespace NeoFlux.Support
             }
 
             return null;
+        }
+        
+        private static NeoPythonNode GetNeoPythonNode()
+        {
+            NeoPythonNode node = new NeoPythonNode(Configuration["PythonNode"]);
+            return node;
+        }
+
+        public static DataNode NeoPythonApiGet(string method)
+        {
+            var response = RequestUtils.Request(RequestType.GET, GetNeoPythonNode() + method);
+            return response.GetNode("results");
         }
     }
 }
