@@ -58,7 +58,7 @@ namespace NeoFlux.Controllers
         {
             try
             {                
-                var bestBlockIndex = LuxApiFactory.GetLuxApi().GetBlockHeight();
+                var bestBlockIndex = LuxApiFactory.GetLuxApi().GetBlockHeight() - 1;
                 var blockResult = LuxApiFactory.GetLuxApi().GetBlock(bestBlockIndex);
                 if (blockResult != null)
                 {
