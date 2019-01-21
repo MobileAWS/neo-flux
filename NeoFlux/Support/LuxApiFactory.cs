@@ -71,7 +71,7 @@ namespace NeoFlux.Support
 
             if (Configuration["Neo:Network"] == "AllCode")
             {
-                return new NeoFluxNeoRPC("http://ec2-54-89-131-225.compute-1.amazonaws.com");
+                return new NeoFluxNeoRPC(Configuration["Neo:DefaultScanUrl"]);
             }
 
             return null;
