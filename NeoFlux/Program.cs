@@ -18,10 +18,14 @@ namespace NeoFlux
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            var threadCount = Environment.GetEnvironmentVariable("NEOFLUX_THREAD_COUNT") ?? "4";
+            return WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .UseSerilog()
+                .UseLibuv(opts => opts.ThreadCount = Int32.Parse(threadCount))
                 .Build();
+        }
     }
 }
