@@ -7,6 +7,7 @@ using Neo.Lux.Core;
 using Neo.Lux.Cryptography;
 using Neo.Lux.Utils;
 using Neo.SmartContract.Framework;
+using NeoFlux.Model;
 using NeoFlux.NeoLux.Core;
 using NeoFlux.Support;
 using Newtonsoft.Json.Linq;
@@ -160,17 +161,17 @@ namespace NeoFlux.Controllers
                 try
                 {              
                     var txId = jsonData.GetValue("txId").Value<string>();
-                    var resultNode = LuxApiFactory.NeoPythonApiGet("notifications/tx/" + txId);
-                    if (resultNode != null)
-                    {
-                        var transactionInfo = resultNode[0];
+                    bool findBlock = jsonData.ContainsKey("findBlock") && jsonData.GetValue("findBlock").Value<bool>();
+                    LuxApiExtensions api = new LuxApiExtensions((NeoRPC)LuxApiFactory.GetLuxApi());
+                    RawTransaction transaction = api.GetRawTransaction(txId, findBlock);
+                    if(transaction != null){                   
                         dynamic result = new JObject();
-                        result.txId = transactionInfo.GetString("tx");
-                        result.block = transactionInfo.GetInt32("block");
-                        result.asset = transactionInfo.GetString("contract");
-                        result.addrFrom = transactionInfo.GetString("addr_from");
-                        result.addrTo = transactionInfo.GetString("addr_to");
-                        result.amount = transactionInfo.GetDouble("amount");
+                        result.txId = transaction.TxID;
+                        result.block = transaction.Block;
+                        result.asset = transaction.Contract;
+                        result.addrFrom = transaction.From;
+                        result.addrTo = transaction.To;
+                        result.amount = transaction.Amount;
                         return JsonResultObject(result);
                     }
                 }
@@ -182,5 +183,9 @@ namespace NeoFlux.Controllers
                 return null;
             });
         }   
+    }
+
+    public class LuxApiExtension
+    {
     }
 }

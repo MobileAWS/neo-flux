@@ -76,17 +76,5 @@ namespace NeoFlux.Support
 
             return null;
         }
-        
-        private static NeoPythonNode GetNeoPythonNode()
-        {
-            NeoPythonNode node = new NeoPythonNode(Configuration["PythonNode"]);
-            return node;
-        }
-
-        public static DataNode NeoPythonApiGet(string method)
-        {
-            var response = RequestUtils.Request(RequestType.GET, GetNeoPythonNode() + method);
-            return response.GetNode("results");
-        }
     }
 }
