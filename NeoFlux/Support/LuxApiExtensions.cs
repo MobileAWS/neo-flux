@@ -38,7 +38,7 @@ namespace NeoFlux.Support
                 resultTx.To = new UInt160(statusData.GetNodeByIndex(2).GetString("value").HexToBytes()).ToAddress();
                 String amountValue = statusData.GetNodeByIndex(3).GetString("value");
                 bool isAmountArray = statusData.GetNodeByIndex(3).GetString("type").Equals("ByteArray");
-                resultTx.Amount = isAmountArray? new BigInteger(amountValue.HexToBytes()).ToDecimal(): Int32.Parse(amountValue);
+                resultTx.Amount = isAmountArray? new BigInteger(amountValue.HexToBytes()): Int32.Parse(amountValue);
                 if (findBlock)
                 {
                     resultTx.Block = GetTransactionBlock(txId.Substring(2));

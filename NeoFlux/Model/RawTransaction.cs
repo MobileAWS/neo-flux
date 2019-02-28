@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 
 namespace NeoFlux.Model
 {
@@ -9,7 +10,7 @@ namespace NeoFlux.Model
         public uint Block { set; get; }
         public String From { set; get; }
         public String To { set; get; }
-        public Decimal Amount { set; get; }
+        public BigInteger Amount { set; get; }
         public String EventType { set; get;  }
     }
 }
