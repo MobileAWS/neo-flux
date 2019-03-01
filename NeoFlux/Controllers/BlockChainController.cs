@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Neo.Lux.Core;
 using Neo.Lux.Cryptography;
 using Neo.Lux.Utils;
 using NeoFlux.Support;
@@ -10,10 +12,13 @@ using Newtonsoft.Json.Linq;
 using Serilog;
 
 namespace NeoFlux.Controllers
-{
+{    
     [Route("api/[controller]")]
     public class BlockChainController : BaseController
     {
+         
+        private static readonly TransactionType[] TransferTransactionTypes = { TransactionType.ContractTransaction, TransactionType.InvocationTransaction };
+
         [HttpPost]
         [Route("get_block")]
         [Authorize]
@@ -23,6 +28,7 @@ namespace NeoFlux.Controllers
             {                
                 var blockIndex = jsonData.GetValue("blockIndex").Value<uint>();
                 var blockResult = LuxApiFactory.GetLuxApi().GetBlock(blockIndex);
+                var transferOnly = jsonData.ContainsKey("transferOnly") && jsonData.GetValue("transferOnly").Value<bool>();
                 if (blockResult != null)
                 {
                     dynamic result = new JObject();
@@ -35,6 +41,10 @@ namespace NeoFlux.Controllers
                     dynamic transactionIds = new JArray();
                     foreach (var transaction in blockResult.transactions)
                     {
+                        if (transferOnly && !TransferTransactionTypes.Contains(transaction.type))
+                        {
+                            continue;
+                        }
                         string key = transaction.Hash.ToString();
                         transactionIds.Add(key);
                     }

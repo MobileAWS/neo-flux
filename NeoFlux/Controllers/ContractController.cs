@@ -152,9 +152,9 @@ namespace NeoFlux.Controllers
         }
         
         [HttpPost]
-        [Route("get_transaction_info")]
+        [Route("get_transfer_transaction_info")]
         [Authorize]
-        public JsonResult GetTransactionInfo([FromBody]JObject jsonData)
+        public JsonResult GetTransferTransactionInfo([FromBody]JObject jsonData)
         {
             return DoWithRetry(GetRetryValueFromJson(jsonData), retryCount =>
             {
@@ -163,7 +163,7 @@ namespace NeoFlux.Controllers
                     var txId = jsonData.GetValue("txId").Value<string>();
                     bool findBlock = jsonData.ContainsKey("findBlock") && jsonData.GetValue("findBlock").Value<bool>();
                     LuxApiExtensions api = new LuxApiExtensions((NeoRPC)LuxApiFactory.GetLuxApi());
-                    RawTransaction transaction = api.GetRawTransaction(txId, findBlock);
+                    RawTransaction transaction = api.GetTransferTransaction(txId, findBlock);
                     if(transaction != null){                   
                         dynamic result = new JObject();
                         result.txId = transaction.TxID;
